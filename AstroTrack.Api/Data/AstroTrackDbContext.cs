@@ -1,3 +1,5 @@
+using AstroTrack.Api.Data.Configurations;
+using AstroTrack.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AstroTrack.Api.Data;
@@ -11,5 +13,13 @@ public class AstroTrackDbContext : DbContext
     public AstroTrackDbContext(DbContextOptions<AstroTrackDbContext> options)
         : base(options)
     {
+    }
+
+    public DbSet<CelestialObject> CelestialObjects { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new CelestialObjectConfiguration());
     }
 }
