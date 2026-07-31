@@ -1,0 +1,15 @@
+# Build output
+bin/
+obj/
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
