@@ -1,5 +1,7 @@
 using AstroTrack.Api.Data;
 using AstroTrack.Api.Infrastructure;
+using AstroTrack.Api.Repositories;
+using AstroTrack.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -17,6 +19,9 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddDbContext<AstroTrackDbContext>(options =>
     options.UseOracle(connectionString));
+
+builder.Services.AddScoped<ICelestialObjectRepository, CelestialObjectRepository>();
+builder.Services.AddScoped<ICelestialObjectService, CelestialObjectService>();
 
 builder.Services.AddHealthChecks()
     .AddCheck<OracleDatabaseHealthCheck>("oracle-database");
