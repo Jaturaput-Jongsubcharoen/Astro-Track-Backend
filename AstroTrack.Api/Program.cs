@@ -1,5 +1,7 @@
 using AstroTrack.Api.Data;
+using AstroTrack.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddDbContext<AstroTrackDbContext>(options =>
     options.UseOracle(connectionString));
+
+builder.Services.AddHealthChecks()
+    .AddCheck<OracleDatabaseHealthCheck>("oracle-database");
 
 builder.Services.AddCors(options =>
 {
@@ -45,5 +50,32 @@ app.MapGet("/health", () => Results.Ok(new
     status = "healthy",
     timestamp = DateTime.UtcNow
 }));
+
+app.MapGet("/health/database", async (
+    HealthCheckService healthCheckService,
+    CancellationToken cancellationToken) =>
+{
+    var result = await healthCheckService.CheckHealthAsync(
+        registration => registration.Name == "oracle-database",
+        cancellationToken);
+
+    return result.Status == HealthStatus.Healthy
+        ? Results.Ok(new
+        {
+            status = "healthy",
+            database = "oracle",
+            check = "CELESTIALOBJECTS",
+            timestamp = DateTime.UtcNow
+        })
+        : Results.Json(
+            new
+            {
+                status = "unhealthy",
+                database = "oracle",
+                check = "CELESTIALOBJECTS",
+                timestamp = DateTime.UtcNow
+            },
+            statusCode: StatusCodes.Status503ServiceUnavailable);
+});
 
 app.Run();
