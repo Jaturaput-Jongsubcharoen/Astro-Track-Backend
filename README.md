@@ -2,6 +2,21 @@
 
 ASP.NET Core backend and REST API for the Astro Track astronomy management platform.
 
+## Continuous Integration
+
+Backend CI runs on pushes to `main` and pull requests targeting `main`.
+The workflow restores NuGet dependencies and builds the backend in Release configuration.
+
+Current backend automated test status:
+
+- There is no dedicated backend test project in this repository yet.
+- `dotnet test` is intentionally skipped in this workflow for now.
+- Adding backend automated tests should be handled in a follow-up issue.
+
+Workflow file:
+
+- `.github/workflows/backend-ci.yml`
+
 ## Project baseline
 
 - Framework: ASP.NET Core 8
