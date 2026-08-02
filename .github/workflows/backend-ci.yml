@@ -30,10 +30,10 @@ jobs:
           cache: true
 
       - name: Restore
-        run: dotnet restore AstroTrack.Api/AstroTrack.Api.csproj
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build AstroTrack.Api/AstroTrack.Api.csproj --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Backend tests status
-        run: echo "No dedicated backend test project exists yet; dotnet test is intentionally skipped in this workflow. Add backend tests in a follow-up issue."
+      - name: Test
+        run: dotnet test --configuration Release --no-build

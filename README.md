@@ -5,13 +5,15 @@ ASP.NET Core backend and REST API for the Astro Track astronomy management platf
 ## Continuous Integration
 
 Backend CI runs on pushes to `main` and pull requests targeting `main`.
-The workflow restores NuGet dependencies and builds the backend in Release configuration.
+The workflow restores NuGet dependencies, builds the backend in Release configuration, and runs automated backend unit tests.
 
-Current backend automated test status:
+Backend test project:
 
-- There is no dedicated backend test project in this repository yet.
-- `dotnet test` is intentionally skipped in this workflow for now.
-- Adding backend automated tests should be handled in a follow-up issue.
+- `AstroTrack.Api.Tests`
+- Framework and tooling: xUnit, Moq, Microsoft.NET.Test.Sdk, xunit.runner.visualstudio, coverlet.collector
+- Coverage scope: CelestialObjectService unit tests (including full entity-to-DTO mapping) and CelestialObjectsController unit tests
+- Local test command: `dotnet test --configuration Release --no-build`
+- Unit tests do not require a live Oracle database or Docker
 
 Workflow file:
 
