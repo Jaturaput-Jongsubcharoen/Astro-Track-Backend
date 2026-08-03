@@ -91,6 +91,103 @@ Example local URLs:
 - http://localhost:5000/api/celestial-objects
 - http://localhost:5000/api/celestial-objects/1
 
+### 4) Issue 24: Celestial Objects create, update, and delete APIs
+
+Implemented:
+
+- Added POST, PUT, and DELETE endpoints for Celestial Objects.
+- Added request DTO validation aligned with Oracle CELESTIALOBJECTS constraints.
+- Added repository and service mutation methods with async EF Core usage.
+- Added safe duplicate/constraint handling without exposing raw Oracle errors.
+- Added controller and service unit tests for mutation flows.
+
+Mutation endpoints:
+
+- POST /api/celestial-objects
+- PUT /api/celestial-objects/{id:long}
+- DELETE /api/celestial-objects/{id:long}
+
+ID strategy:
+
+- POST uses client-supplied ObjectId in request body.
+- Duplicate ObjectId returns HTTP 409 Conflict.
+
+Example POST request:
+
+```json
+{
+  "objectId": 12001,
+  "objectName": "Sample Exoplanet",
+  "category": "Exoplanet",
+  "distanceLightYears": 42.123456,
+  "discoveryDate": "2026-01-15T00:00:00Z",
+  "inSolarSystem": "N",
+  "habitabilityScore": 7.25,
+  "surfaceTemperature": -12.3,
+  "gravity": 1.08,
+  "nitrogen": "Y",
+  "oxygen": "Y",
+  "co2": "N",
+  "sulfuricAcid": "N",
+  "hydrogen": "Y",
+  "helium": "N",
+  "methane": "N",
+  "waterVapor": "Y",
+  "silicates": "Y",
+  "iron": "Y",
+  "nickel": "N"
+}
+```
+
+Example PUT request:
+
+```json
+{
+  "objectName": "Sample Exoplanet Updated",
+  "category": "Exoplanet",
+  "distanceLightYears": 42.123456,
+  "discoveryDate": "2026-02-01T00:00:00Z",
+  "inSolarSystem": "N",
+  "habitabilityScore": 8.10,
+  "surfaceTemperature": -10.0,
+  "gravity": 1.05,
+  "nitrogen": "Y",
+  "oxygen": "Y",
+  "co2": "N",
+  "sulfuricAcid": "N",
+  "hydrogen": "Y",
+  "helium": "N",
+  "methane": "N",
+  "waterVapor": "Y",
+  "silicates": "Y",
+  "iron": "Y",
+  "nickel": "N"
+}
+```
+
+DELETE behavior:
+
+- DELETE /api/celestial-objects/{id} returns 204 No Content on success.
+- Returns 404 Not Found when the record does not exist.
+
+Expected status codes:
+
+- POST: 201 Created, 400 Bad Request, 409 Conflict
+- PUT: 200 OK, 400 Bad Request, 404 Not Found
+- DELETE: 204 No Content, 404 Not Found, 409 Conflict (related data constraints)
+
+Validation rules for create/update requests:
+
+- objectName is required, max 30 characters.
+- category is required, max 50 characters, and must be one of:
+  Planet, Exoplanet, Moon, Dwarf Planet, Asteroid, Comet, Black Hole, Neutron Star, Star.
+- inSolarSystem must be Y or N.
+- habitabilityScore must be between 0 and 10.
+- gravity must be between 0 and 100 when provided.
+- composition flags must each be Y or N:
+  nitrogen, oxygen, co2, sulfuricAcid, hydrogen, helium, methane, waterVapor, silicates, iron, nickel.
+- objectId (POST) must be greater than 0.
+
 ## Local setup
 
 ### 1) Start Oracle container
@@ -141,6 +238,14 @@ Use additional local SQL scripts only if your Oracle environment requires them.
 dotnet restore
 dotnet build
 dotnet run
+```
+
+Release verification commands:
+
+```powershell
+dotnet restore
+dotnet build --configuration Release --no-restore
+dotnet test --configuration Release --no-build
 ```
 
 ## Health check verification

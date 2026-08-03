@@ -24,7 +24,9 @@ public class UpdateCelestialObjectDto
     [DataType(DataType.Date)]
     public DateTime? DiscoveryDate { get; set; }
 
-    public bool InSolarSystem { get; set; }
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "InSolarSystem must be 'Y' or 'N'.")]
+    public string InSolarSystem { get; set; } = "N";
 
     [Range(0, 10, ErrorMessage = "HabitabilityScore must be between 0 and 10")]
     public decimal? HabitabilityScore { get; set; }
@@ -34,15 +36,47 @@ public class UpdateCelestialObjectDto
     [Range(0, 100, ErrorMessage = "Gravity must be between 0 and 100")]
     public decimal? Gravity { get; set; }
 
-    public bool Nitrogen { get; set; }
-    public bool Oxygen { get; set; }
-    public bool Co2 { get; set; }
-    public bool SulfuricAcid { get; set; }
-    public bool Hydrogen { get; set; }
-    public bool Helium { get; set; }
-    public bool Methane { get; set; }
-    public bool WaterVapor { get; set; }
-    public bool Silicates { get; set; }
-    public bool Iron { get; set; }
-    public bool Nickel { get; set; }
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Nitrogen must be 'Y' or 'N'.")]
+    public string Nitrogen { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Oxygen must be 'Y' or 'N'.")]
+    public string Oxygen { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Co2 must be 'Y' or 'N'.")]
+    public string Co2 { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "SulfuricAcid must be 'Y' or 'N'.")]
+    public string SulfuricAcid { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Hydrogen must be 'Y' or 'N'.")]
+    public string Hydrogen { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Helium must be 'Y' or 'N'.")]
+    public string Helium { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Methane must be 'Y' or 'N'.")]
+    public string Methane { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "WaterVapor must be 'Y' or 'N'.")]
+    public string WaterVapor { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Silicates must be 'Y' or 'N'.")]
+    public string Silicates { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Iron must be 'Y' or 'N'.")]
+    public string Iron { get; set; } = "N";
+
+    [Required]
+    [RegularExpression("^[YN]$", ErrorMessage = "Nickel must be 'Y' or 'N'.")]
+    public string Nickel { get; set; } = "N";
 }
