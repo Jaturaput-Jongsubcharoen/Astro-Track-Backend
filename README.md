@@ -240,7 +240,11 @@ dotnet build
 dotnet run
 ```
 
+<<<<<<< Updated upstream
 Release verification commands:
+=======
+Release validation commands (same as CI):
+>>>>>>> Stashed changes
 
 ```powershell
 dotnet restore
@@ -264,6 +268,96 @@ Example successful response for database health:
   "check": "CELESTIALOBJECTS"
 }
 ```
+
+## Runtime configuration
+
+The backend reads configuration from appsettings, environment variables, and User Secrets.
+
+Required for production hosting:
+
+- `ConnectionStrings__OracleDb`
+- `AllowedOrigins__0` (and additional indexes such as `AllowedOrigins__1` when needed)
+- `ASPNETCORE_ENVIRONMENT` (typically `Production`)
+- `ASPNETCORE_URLS` (for containers, typically `http://+:5000`)
+
+### CORS behavior
+
+- Development preserves local frontend origins (`http://localhost:4200`, `https://localhost:4200`).
+- Production uses configured `AllowedOrigins` values only.
+- Duplicate origins are removed automatically.
+- Wildcard CORS is intentionally not enabled.
+
+Example production origin config:
+
+```powershell
+set AllowedOrigins__0=https://your-frontend-app.azurestaticapps.net
+set AllowedOrigins__1=https://your-frontend-app.azurewebsites.net
+```
+
+### Oracle connection configuration
+
+- Do not store Oracle passwords in appsettings files.
+- Local development should continue using User Secrets.
+- Docker and cloud hosting should provide `ConnectionStrings__OracleDb` via environment variables.
+
+Example local User Secrets:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:OracleDb" "User Id=YOUR_USER;Password=YOUR_PASSWORD;Data Source=127.0.0.1:1522/FREEPDB1;"
+```
+
+### Reverse proxy and HTTPS behavior
+
+- Forwarded headers (`X-Forwarded-For`, `X-Forwarded-Proto`) are enabled for reverse-proxy hosting (Azure App Service / Azure Container Apps).
+- HTTPS redirection remains enabled and works with forwarded headers to avoid redirect loops behind TLS-terminating proxies.
+- Production exception responses return generic ProblemDetails payloads while full exception details remain logged server-side.
+
+## Docker
+
+This repository now includes a production Dockerfile at the backend root.
+
+Build production image:
+
+```powershell
+docker build -t astro-track-backend:prod .
+```
+
+Run production image locally (example values):
+
+```powershell
+docker run --rm -p 5001:5000 ^
+  -e ASPNETCORE_ENVIRONMENT=Production ^
+  -e ASPNETCORE_URLS=http://+:5000 ^
+  -e ConnectionStrings__OracleDb="User Id=YOUR_USER;Password=YOUR_PASSWORD;Data Source=host.docker.internal:1522/FREEPDB1;" ^
+  -e AllowedOrigins__0=http://localhost:4200 ^
+  astro-track-backend:prod
+```
+
+The existing local Docker Compose workflow remains supported via environment-variable connection string injection.
+
+## Frontend production compatibility
+
+The frontend production container calls same-origin `/api` and its Nginx proxy forwards requests to the backend origin.
+For production deployment, set backend CORS origins to the frontend hostnames that will call the API.
+
+## Azure deployment notes
+
+- Azure App Service / Azure Container Apps should provide all production values via application settings / environment variables.
+- Set `ConnectionStrings__OracleDb` in secret configuration.
+- Set at least one `AllowedOrigins__*` value for the deployed frontend origin.
+- Set `ASPNETCORE_ENVIRONMENT=Production` and `ASPNETCORE_URLS=http://+:5000` for container hosting.
+
+## Health endpoint verification
+
+With the API running, verify:
+
+```powershell
+curl http://localhost:5000/health
+curl http://localhost:5000/health/database
+```
+
+- `/health` validates service liveness without requiring database connectivity.
+- `/health/database` validates Oracle connectivity and CELESTIALOBJECTS queryability.
 
 ## Notes
 
