@@ -27,6 +27,12 @@ builder.Services.AddDbContext<AstroTrackDbContext>(options =>
 
 builder.Services.AddScoped<ICelestialObjectRepository, CelestialObjectRepository>();
 builder.Services.AddScoped<ICelestialObjectService, CelestialObjectService>();
+builder.Services.AddScoped<IResearcherRepository, ResearcherRepository>();
+builder.Services.AddScoped<IResearcherService, ResearcherService>();
+builder.Services.AddScoped<IMissionRepository, MissionRepository>();
+builder.Services.AddScoped<IMissionService, MissionService>();
+builder.Services.AddScoped<IObservationRepository, ObservationRepository>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
 
 builder.Services.AddHealthChecks()
     .AddCheck<OracleDatabaseHealthCheck>("oracle-database");
