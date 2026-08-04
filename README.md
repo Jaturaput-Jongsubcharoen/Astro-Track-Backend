@@ -240,11 +240,7 @@ dotnet build
 dotnet run
 ```
 
-<<<<<<< Updated upstream
 Release verification commands:
-=======
-Release validation commands (same as CI):
->>>>>>> Stashed changes
 
 ```powershell
 dotnet restore

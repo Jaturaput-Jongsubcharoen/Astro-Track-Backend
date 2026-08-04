@@ -14,3 +14,11 @@ obj/
 .env
 .env.*
 !.env.example
+
+
+.oracle/
+*.p12
+*.sso
+*.jks
+*.pem
+*.ora
