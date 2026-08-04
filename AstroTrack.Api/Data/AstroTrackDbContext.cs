@@ -18,6 +18,7 @@ public class AstroTrackDbContext : DbContext
     public DbSet<CelestialObject> CelestialObjects { get; set; } = null!;
     public DbSet<Researcher> Researchers { get; set; } = null!;
     public DbSet<Mission> Missions { get; set; } = null!;
+    public DbSet<Observation> Observations { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,5 +26,6 @@ public class AstroTrackDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CelestialObjectConfiguration());
         modelBuilder.ApplyConfiguration(new ResearcherConfiguration());
         modelBuilder.ApplyConfiguration(new MissionConfiguration());
+        modelBuilder.ApplyConfiguration(new ObservationConfiguration());
     }
 }
