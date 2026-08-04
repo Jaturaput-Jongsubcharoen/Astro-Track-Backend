@@ -16,10 +16,12 @@ public class AstroTrackDbContext : DbContext
     }
 
     public DbSet<CelestialObject> CelestialObjects { get; set; } = null!;
+    public DbSet<Researcher> Researchers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CelestialObjectConfiguration());
+        modelBuilder.ApplyConfiguration(new ResearcherConfiguration());
     }
 }
